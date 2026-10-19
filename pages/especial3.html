@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Months & Holidays - Unit 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #333;
+            line-height: 1.6;
+            padding-right: 320px;
+        }
+
+        .translator-panel {
+            position: fixed; right: 0; top: 0;
+            width: 300px; height: 100vh;
+            background: linear-gradient(180deg, #6a1b9a 0%, #8e24aa 100%);
+            padding: 20px 15px;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            z-index: 1000; overflow-y: auto;
+        }
+
+        .translator-panel h3 {
+            color: white; text-align: center;
+            margin-bottom: 15px; font-size: 1.2em;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .translator-panel .translator-widget {
+            background: white; border-radius: 10px;
+            padding: 15px; margin-bottom: 15px;
+        }
+
+        .translator-panel textarea {
+            width: 100%; min-height: 100px;
+            border: 2px solid #ce93d8; border-radius: 8px;
+            padding: 10px; font-size: 14px;
+            resize: vertical; font-family: inherit;
+        }
+
+        .translator-panel textarea:focus { outline: none; border-color: #8e24aa; }
+
+        .translator-panel .lang-labels {
+            display: flex; justify-content: space-between;
+            margin: 10px 0; color: #6a1b9a;
+            font-weight: bold; font-size: 0.9em;
+        }
+
+        .translator-panel .translate-btn {
+            width: 100%; background: #8e24aa; color: white;
+            border: none; padding: 12px; border-radius: 8px;
+            cursor: pointer; font-size: 1em; font-weight: bold;
+            transition: all 0.3s; margin: 10px 0;
+        }
+
+        .translator-panel .translate-btn:hover {
+            background: #6a1b9a; transform: translateY(-2px);
+        }
+
+        .translator-panel .result-box {
+            background: #f3e5f5; border: 2px solid #ce93d8;
+            border-radius: 8px; padding: 10px;
+            min-height: 80px; font-size: 14px; color: #333;
+        }
+
+        .translator-panel .api-info {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px; padding: 12px;
+            color: white; font-size: 0.85em; margin-top: 15px;
+        }
+
+        .translator-panel .api-info code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px; border-radius: 4px;
+            font-size: 0.8em; word-break: break-all;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+        header {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%);
+            color: white; padding: 40px 20px; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 0 0 20px 20px; margin-bottom: 30px;
+        }
+
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.2em; opacity: 0.9; }
+        header .subtitle { font-size: 1em; opacity: 0.8; margin-top: 5px; }
+
+        .section {
+            background: white; margin: 30px 0; padding: 30px;
+            border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid #8e24aa;
+        }
+
+        .section h2 {
+            color: #6a1b9a; margin-bottom: 20px; font-size: 1.8em;
+            border-bottom: 2px solid #e1bee7; padding-bottom: 10px;
+        }
+
+        .section h3 { color: #7b1fa2; margin: 20px 0 10px 0; }
+
+        .section .instructions {
+            background: #f3e5f5; padding: 15px; border-radius: 8px;
+            margin-bottom: 20px; border-left: 4px solid #8e24aa;
+        }
+
+        .theory-box {
+            background: #f3e5f5; border-left: 4px solid #8e24aa;
+            padding: 20px; border-radius: 0 10px 10px 0; margin: 20px 0;
+        }
+
+        .theory-box ul { margin-left: 20px; margin-top: 10px; }
+        .theory-box li { margin: 8px 0; }
+
+        /* Activity 1: True/False */
+        .tf-question {
+            background: #fafafa;
+            border: 2px solid #e1bee7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .tf-question .question-number {
+            background: #8e24aa;
+            color: white;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .tf-question .question-text {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .tf-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tf-btn {
+            padding: 10px 25px;
+            border: 2px solid #ce93d8;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tf-btn:hover {
+            background: #8e24aa;
+            color: white;
+            border-color: #8e24aa;
+        }
+
+        .tf-btn.selected-true {
+            background: #43a047;
+            color: white;
+            border-color: #43a047;
+        }
+
+        .tf-btn.selected-false {
+            background: #e53935;
+            color: white;
+            border-color: #e53935;
+        }
+
+        .tf-btn.correct-answer {
+            background: #43a047;
+            color: white;
+            border-color: #43a047;
+        }
+
+        .tf-btn.incorrect-answer {
+            background: #ffcdd2;
+            color: #c62828;
+            border-color: #e53935;
+        }
+
+        /* Activity 2: Holiday Vocabulary */
+        .holiday-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .holiday-card {
+            background: linear-gradient(135deg, #ede7f6 0%, #e1bee7 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #ce93d8;
+            transition: transform 0.3s;
+        }
+
+        .holiday-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .holiday-card .emoji { font-size: 3em; margin-bottom: 10px; }
+        .holiday-card .name {
+            font-weight: bold;
+            color: #6a1b9a;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .holiday-card .date {
+            color: #8e24aa;
+            font-size: 0.95em;
+        }
+
+        /* Activity 3: TTS Questions */
+        .tts-question {
+            background: #fafafa;
+            border: 2px solid #e1bee7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .tts-question .question-number {
+            background: #8e24aa;
+            color: white;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .play-btn.playing {
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .tts-question input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ce93d8;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .tts-question input:focus { outline: none; border-color: #8e24aa; }
+        .tts-question input.correct { border-color: #43a047; background: #c8e6c9; }
+        .tts-question input.incorrect { border-color: #e53935; background: #ffcdd2; }
+
+        .conversation-box {
+            background: linear-gradient(135deg, #ede7f6 0%, #e1bee7 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .conversation-line {
+            background: white;
+            padding: 12px 18px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #8e24aa;
+            font-size: 1.1em;
+        }
+
+        .conversation-line .speaker {
+            font-weight: bold;
+            color: #6a1b9a;
+        }
+
+        .conversation-line .highlight {
+            color: #e53935;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .btn {
+            background: #8e24aa; color: white; border: none;
+            padding: 12px 25px; border-radius: 8px;
+            cursor: pointer; font-size: 1em; margin: 10px 5px;
+            transition: all 0.3s; font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #6a1b9a; transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-check { background: #43a047; }
+        .btn-check:hover { background: #2e7d32; }
+        .btn-reset { background: #e53935; }
+        .btn-reset:hover { background: #c62828; }
+
+        .feedback {
+            margin-top: 10px; padding: 12px 15px;
+            border-radius: 8px; display: none; font-weight: 500;
+        }
+
+        .feedback.correct {
+            background: #c8e6c9; color: #2e7d32; border: 2px solid #43a047;
+        }
+
+        .feedback.incorrect {
+            background: #ffcdd2; color: #c62828; border: 2px solid #e53935;
+        }
+
+        .feedback.hint {
+            background: #fff9c4; color: #f57f17; border: 2px solid #fbc02d;
+        }
+
+        .part-badge {
+            display: inline-block; background: #8e24aa; color: white;
+            padding: 5px 15px; border-radius: 20px;
+            font-size: 0.85em; margin-right: 10px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%);
+            color: white; padding: 20px; border-radius: 10px;
+            text-align: center; margin: 20px 0;
+            font-size: 1.3em; font-weight: bold; display: none;
+        }
+
+        @media (max-width: 900px) {
+            body { padding-right: 0; }
+            .translator-panel {
+                position: relative; width: 100%;
+                height: auto; border-radius: 0 0 15px 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8em; }
+            .section { padding: 20px; }
+            .holiday-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="translator-panel">
+        <h3>🌐 English → Spanish Translator</h3>
+        <div class="translator-widget">
+            <div class="lang-labels">
+                <span>🇬🇧 English</span>
+                <span>🇪 Español</span>
+            </div>
+            <textarea id="sourceText" placeholder="Type or paste English text here..."></textarea>
+            <button class="translate-btn" id="translateBtn">Translate ▶</button>
+            <div class="result-box" id="translatedText">Translation will appear here...</div>
+        </div>
+        <div class="api-info">
+            <strong>📋 API Info:</strong><br>
+            <small>Using Google Translate API</small><br>
+            <code>translate.googleapis.com</code><br><br>
+            <strong>💡 Tip:</strong> Type any text and click translate to get the Spanish equivalent.
+        </div>
+    </div>
+
+    <header>
+        <h1>📅 Months & Holidays</h1>
+        <p>Unit 5 - Months of the Year & Holiday Vocabulary</p>
+        <div class="subtitle">Learn about months, holidays, and celebrations</div>
+    </header>
+
+    <div class="container">
+
+        <!-- ACTIVITY 1: TRUE/FALSE QUESTIONS -->
+        <div class="section" id="activity1">
+            <h2><span class="part-badge">Activity 1</span> ✅❌ True or False: Months of the Year</h2>
+            <div class="instructions">
+                <strong>Instructions:</strong> Read each statement about months and decide if it's True or False. Click the appropriate button.
+            </div>
+
+            <div id="tfQuestions">
+                <!-- Questions will be generated by JS -->
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-check" id="checkAct1Btn">✓ Check Answers</button>
+                <button class="btn btn-reset" id="resetAct1Btn">↺ Reset</button>
+            </div>
+            <div id="act1-feedback" class="feedback"></div>
+        </div>
+
+        <!-- ACTIVITY 2: HOLIDAY VOCABULARY -->
+        <div class="section" id="activity2">
+            <h2><span class="part-badge">Activity 2</span>  Holiday Vocabulary</h2>
+            <div class="instructions">
+                <strong>Instructions:</strong> Learn the names and dates of important holidays. Each card shows the emoji, name, and date of celebration.
+            </div>
+
+            <div class="holiday-grid" id="holidayGrid">
+                <!-- Holiday cards will be generated by JS -->
+            </div>
+
+            <div class="theory-box">
+                <h3>Important Note:</h3>
+                <ul>
+                    <li><strong>Eve</strong> = Short form of "evening" - used to express the previous day of a big celebration</li>
+                    <li>Example: <strong>Christmas Eve</strong> (December 24th) is the day before <strong>Christmas</strong> (December 25th)</li>
+                    <li>Example: <strong>New Year's Eve</strong> (December 31st) is the day before <strong>New Year's Day</strong> (January 1st)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ACTIVITY 3: TTS CONVERSATION & QUESTIONS -->
+        <div class="section" id="activity3">
+            <h2><span class="part-badge">Activity 3</span> 🎧 Listening: Holidays & Dates</h2>
+            <div class="instructions">
+                <strong>Instructions:</strong> First, listen to the conversation about favorite holidays. Then, answer 5 questions where the system will ask you about which holiday is celebrated on a specific date.
+            </div>
+
+            <h3>📝 Example Conversation:</h3>
+            <div class="conversation-box">
+                <div class="conversation-line">
+                    <span class="speaker">A:</span> <span class="highlight">What's your favorite holiday?</span>
+                </div>
+                <div class="conversation-line">
+                    <span class="speaker">B:</span> <span class="highlight">My favorite holiday is New Year's Eve.</span>
+                </div>
+                <div class="conversation-line">
+                    <span class="speaker">A:</span> <span class="highlight">That is interesting!</span>
+                </div>
+                <div class="conversation-line">
+                    <span class="speaker">B:</span> <span class="highlight">What about your favorite holiday?</span>
+                </div>
+                <div class="conversation-line">
+                    <span class="speaker">A:</span> <span class="highlight">It's the Feast of San Salvador.</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="play-btn" id="playConversationBtn" style="font-size: 1.2em; padding: 15px 30px;">
+                    🔊 Listen to Conversation
+                </button>
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Questions: What holiday is celebrated on this date?</h3>
+            <p style="margin-bottom: 15px; color: #666; font-style: italic;">Click the play button to hear the question, then write your answer.</p>
+
+            <div id="ttsQuestions">
+                <!-- TTS questions will be generated by JS -->
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-check" id="checkAct3Btn">✓ Check Answers</button>
+                <button class="btn btn-reset" id="resetAct3Btn">↺ Reset</button>
+            </div>
+            <div id="act3-feedback" class="feedback"></div>
+            <div class="score-display" id="act3-score"></div>
+        </div>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ============ TRANSLATOR ============
+        async function translateText() {
+            const text = document.getElementById('sourceText').value.trim();
+            const resultBox = document.getElementById('translatedText');
+            if (!text) {
+                resultBox.textContent = '️ Please enter some text to translate.';
+                resultBox.style.color = '#f57f17';
+                return;
+            }
+            resultBox.textContent = 'Translating...';
+            resultBox.style.color = '#333';
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(text)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                let translated = '';
+                if (data && data[0]) {
+                    data[0].forEach(item => { if (item[0]) translated += item[0]; });
+                }
+                resultBox.textContent = translated || 'No translation available.';
+                resultBox.style.color = '#333';
+            } catch (error) {
+                resultBox.textContent = '❌ Error connecting to translator.';
+                resultBox.style.color = '#c62828';
+            }
+        }
+
+        const translateBtn = document.getElementById('translateBtn');
+        if (translateBtn) translateBtn.addEventListener('click', translateText);
+        const sourceText = document.getElementById('sourceText');
+        if (sourceText) {
+            sourceText.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); translateText(); }
+            });
+        }
+
+        function normalizeText(text) {
+            if (!text) return '';
+            return text.toLowerCase().trim().replace(/\s+/g, ' ').replace(/\.$/, '');
+        }
+
+        // ============ TTS FUNCTION ============
+        let maleVoice = null;
+
+        function loadVoices() {
+            if (!('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices();
+            const maleVoiceNames = ['Microsoft David', 'Microsoft Mark', 'Daniel', 'Alex', 'Google UK English Male', 'Google US English'];
+            for (let name of maleVoiceNames) {
+                const found = voices.find(v => v.name.includes(name) && v.lang.startsWith('en'));
+                if (found) { maleVoice = found; return; }
+            }
+            const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+            if (englishVoices.length > 0) maleVoice = englishVoices[0];
+        }
+
+        if ('speechSynthesis' in window) {
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function speakText(text, btnElement, rate) {
+            if (!('speechSynthesis' in window)) {
+                alert('Text-to-speech not supported.');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = rate || 0.7;
+            utterance.pitch = 0.9;
+
+            if (maleVoice) utterance.voice = maleVoice;
+
+            if (btnElement) {
+                btnElement.classList.add('playing');
+                const originalText = btnElement.innerHTML;
+                btnElement.innerHTML = '🔊 Playing...';
+
+                utterance.onend = function() {
+                    btnElement.classList.remove('playing');
+                    btnElement.innerHTML = originalText;
+                };
+
+                utterance.onerror = function() {
+                    btnElement.classList.remove('playing');
+                    btnElement.innerHTML = originalText;
+                };
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ============ ACTIVITY 1: TRUE/FALSE ============
+        const tfQuestionsData = [
+            { question: "March is the third month of the year.", answer: true },
+            { question: "January is spelled J-a-n-u-a-r-y.", answer: true },
+            { question: "April and August are the two months that start with the letter A.", answer: true },
+            { question: "September is the ninth month of the year.", answer: true },
+            { question: "20th is spelled t-w-e-n-t-i-e-t-h.", answer: false },
+            { question: "July comes after June.", answer: true },
+            { question: "November comes before December.", answer: true },
+            { question: "5th is spelled f-i-f-t-h.", answer: true },
+            { question: "January, June, and July are the three months that start with the letter J.", answer: true },
+            { question: "February is the second month of the year.", answer: true }
+        ];
+
+        const tfQuestionsContainer = document.getElementById('tfQuestions');
+        let userAnswers = {};
+
+        tfQuestionsData.forEach((q, index) => {
+            const item = document.createElement('div');
+            item.className = 'tf-question';
+            item.innerHTML = `
+                <div>
+                    <span class="question-number">${index + 1}</span>
+                    <span class="question-text">${q.question}</span>
+                </div>
+                <div class="tf-buttons">
+                    <button class="tf-btn" data-question="${index}" data-answer="true">True</button>
+                    <button class="tf-btn" data-question="${index}" data-answer="false">False</button>
+                </div>
+            `;
+            tfQuestionsContainer.appendChild(item);
+        });
+
+        document.querySelectorAll('.tf-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const questionIndex = this.dataset.question;
+                const answer = this.dataset.answer;
+
+                // Remove previous selection
+                document.querySelectorAll(`.tf-btn[data-question="${questionIndex}"]`).forEach(b => {
+                    b.classList.remove('selected-true', 'selected-false');
+                });
+
+                // Mark selection
+                if (answer === 'true') {
+                    this.classList.add('selected-true');
+                } else {
+                    this.classList.add('selected-false');
+                }
+
+                userAnswers[questionIndex] = answer === 'true';
+            });
+        });
+
+        function checkActivity1() {
+            let correct = 0;
+            let total = tfQuestionsData.length;
+            let allAnswered = true;
+
+            for (let i = 0; i < total; i++) {
+                if (userAnswers[i] === undefined) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+
+            if (!allAnswered) {
+                const fb = document.getElementById('act1-feedback');
+                fb.textContent = '⚠️ Please answer all questions before checking.';
+                fb.className = 'feedback hint'; fb.style.display = 'block';
+                return;
+            }
+
+            tfQuestionsData.forEach((q, index) => {
+                const buttons = document.querySelectorAll(`.tf-btn[data-question="${index}"]`);
+                const userAnswer = userAnswers[index];
+
+                buttons.forEach(btn => {
+                    const btnAnswer = btn.dataset.answer === 'true';
+                    if (btnAnswer === q.answer) {
+                        btn.classList.add('correct-answer');
+                    } else if (btnAnswer === userAnswer && userAnswer !== q.answer) {
+                        btn.classList.add('incorrect-answer');
+                    }
+                });
+
+                if (userAnswer === q.answer) correct++;
+            });
+
+            const fb = document.getElementById('act1-feedback');
+            if (correct === total) {
+                fb.textContent = `🎉 Perfect! All ${correct}/${total} answers are correct!`;
+                fb.className = 'feedback correct';
+            } else if (correct >= total * 0.7) {
+                fb.textContent = `👍 Good job! ${correct}/${total} correct. Review the ones marked in red.`;
+                fb.className = 'feedback correct';
+            } else {
+                fb.textContent = `📚 ${correct}/${total} correct. Review the months and their order.`;
+                fb.className = 'feedback incorrect';
+            }
+            fb.style.display = 'block';
+        }
+
+        function resetActivity1() {
+            userAnswers = {};
+            document.querySelectorAll('.tf-btn').forEach(btn => {
+                btn.classList.remove('selected-true', 'selected-false', 'correct-answer', 'incorrect-answer');
+            });
+            document.getElementById('act1-feedback').style.display = 'none';
+        }
+
+        const checkAct1Btn = document.getElementById('checkAct1Btn');
+        if (checkAct1Btn) checkAct1Btn.addEventListener('click', checkActivity1);
+        const resetAct1Btn = document.getElementById('resetAct1Btn');
+        if (resetAct1Btn) resetAct1Btn.addEventListener('click', resetActivity1);
+
+        // ============ ACTIVITY 2: HOLIDAY VOCABULARY ============
+        const holidaysData = [
+            { emoji: '🎆', name: "New Year's Eve", date: 'December 31st' },
+            { emoji: '🎉', name: "New Year's Day", date: 'January 1st' },
+            { emoji: '💝', name: "Valentine's Day", date: 'February 14th' },
+            { emoji: '✝️', name: 'Holy Week', date: 'March/April (varies)' },
+            { emoji: '', name: 'The Day of the Cross', date: 'May 3rd' },
+            { emoji: '👩', name: "Mother's Day", date: 'May 10th' },
+            { emoji: '👨', name: "Father's Day", date: 'June 17th' },
+            { emoji: '‍🏫', name: "Teacher's Day", date: 'June 22nd' },
+            { emoji: '🏛️', name: 'Feast of San Salvador', date: 'August 6th' },
+            { emoji: '🇸🇻', name: 'Independence Day', date: 'September 15th' },
+            { emoji: '', name: "All Souls' Day", date: 'November 2nd' },
+            { emoji: '🎄', name: 'Christmas Eve', date: 'December 24th' },
+            { emoji: '🎅', name: 'Christmas', date: 'December 25th' }
+        ];
+
+        const holidayGrid = document.getElementById('holidayGrid');
+        holidaysData.forEach(holiday => {
+            const card = document.createElement('div');
+            card.className = 'holiday-card';
+            card.innerHTML = `
+                <div class="emoji">${holiday.emoji}</div>
+                <div class="name">${holiday.name}</div>
+                <div class="date">${holiday.date}</div>
+            `;
+            holidayGrid.appendChild(card);
+        });
+
+        // ============ ACTIVITY 3: TTS QUESTIONS ============
+        const conversationText = "A: What's your favorite holiday? B: My favorite holiday is New Year's Eve. A: That is interesting! B: What about your favorite holiday? A: It's the Feast of San Salvador.";
+
+        const ttsQuestionsData = [
+            { question: "What holiday is celebrated on December 25th?", answer: ['christmas', 'xmas'] },
+            { question: "What holiday is celebrated on September 15th?", answer: ['independence day', 'independence'] },
+            { question: "What holiday is celebrated on February 14th?", answer: ["valentine's day", 'valentines day', 'valentine'] },
+            { question: "What holiday is celebrated on August 6th?", answer: ['feast of san salvador', 'san salvador'] },
+            { question: "What holiday is celebrated on December 31st?", answer: ["new year's eve", 'new years eve'] }
+        ];
+
+        const ttsQuestionsContainer = document.getElementById('ttsQuestions');
+        ttsQuestionsData.forEach((q, index) => {
+            const item = document.createElement('div');
+            item.className = 'tts-question';
+            item.innerHTML = `
+                <div>
+                    <span class="question-number">${index + 1}</span>
+                    <button class="play-btn" id="ttsPlayBtn${index}">🔊 Play Question</button>
+                </div>
+                <input type="text" id="ttsInput${index}" placeholder="Write the holiday name...">
+            `;
+            ttsQuestionsContainer.appendChild(item);
+
+            document.getElementById(`ttsPlayBtn${index}`).addEventListener('click', function() {
+                speakText(q.question, this, 0.7);
+            });
+        });
+
+        document.getElementById('playConversationBtn').addEventListener('click', function() {
+            speakText(conversationText, this, 0.7);
+        });
+
+        function checkActivity3() {
+            let correct = 0;
+            let total = ttsQuestionsData.length;
+            let allAnswered = true;
+
+            ttsQuestionsData.forEach((q, index) => {
+                const input = document.getElementById(`ttsInput${index}`);
+                if (!normalizeText(input.value)) allAnswered = false;
+            });
+
+            if (!allAnswered) {
+                const fb = document.getElementById('act3-feedback');
+                fb.textContent = '️ Please answer all questions before checking.';
+                fb.className = 'feedback hint'; fb.style.display = 'block';
+                return;
+            }
+
+            ttsQuestionsData.forEach((q, index) => {
+                const input = document.getElementById(`ttsInput${index}`);
+                const userAnswer = normalizeText(input.value);
+                const isCorrect = q.answer.some(ans => userAnswer.includes(ans));
+
+                if (isCorrect) {
+                    correct++;
+                    input.classList.remove('incorrect'); input.classList.add('correct');
+                } else {
+                    input.classList.remove('correct'); input.classList.add('incorrect');
+                }
+            });
+
+            const fb = document.getElementById('act3-feedback');
+            const scoreDisplay = document.getElementById('act3-score');
+
+            if (correct === total) {
+                fb.textContent = `🎉 Perfect! You got all ${correct}/${total} holidays correct!`;
+                fb.className = 'feedback correct';
+                scoreDisplay.textContent = '🏆 Perfect Score: 5/5 (100%)';
+                scoreDisplay.style.background = 'linear-gradient(135deg, #43a047 0%, #66bb6a 100%)';
+            } else if (correct >= 3) {
+                fb.textContent = `👍 Good job! ${correct}/${total} correct. Review the ones in red.`;
+                fb.className = 'feedback correct';
+                scoreDisplay.textContent = `⭐ Good Job: ${correct}/5 (${Math.round((correct/total)*100)}%)`;
+                scoreDisplay.style.background = 'linear-gradient(135deg, #ffa000 0%, #ffca28 100%)';
+            } else {
+                fb.textContent = `📚 ${correct}/${total} correct. Listen again and try to remember the holiday dates.`;
+                fb.className = 'feedback incorrect';
+                scoreDisplay.textContent = `📖 Keep Learning: ${correct}/5 (${Math.round((correct/total)*100)}%)`;
+                scoreDisplay.style.background = 'linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%)';
+            }
+
+            fb.style.display = 'block';
+            scoreDisplay.style.display = 'block';
+        }
+
+        function resetActivity3() {
+            ttsQuestionsData.forEach((_, index) => {
+                const input = document.getElementById(`ttsInput${index}`);
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            document.getElementById('act3-feedback').style.display = 'none';
+            document.getElementById('act3-score').style.display = 'none';
+        }
+
+        const checkAct3Btn = document.getElementById('checkAct3Btn');
+        if (checkAct3Btn) checkAct3Btn.addEventListener('click', checkActivity3);
+        const resetAct3Btn = document.getElementById('resetAct3Btn');
+        if (resetAct3Btn) resetAct3Btn.addEventListener('click', resetActivity3);
+
+    });
+    </script>
+
+</body>
+</html>
